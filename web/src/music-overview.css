@@ -1,0 +1,71 @@
+.music-view-toggle, .overview-return {
+  position: absolute; z-index: 7; left: 40px;
+  display: flex; align-items: center; gap: 11px; padding: 9px 0;
+  border: 0; border-bottom: 1px solid var(--line); background: none;
+  font-size: 12px !important; cursor: pointer; letter-spacing: .06em;
+}
+.music-view-toggle { top: 150px; }
+.music-view-toggle svg, .overview-return svg { width: 16px; height: 16px; }
+.music-view-toggle kbd, .overview-return kbd { color: var(--muted); font-size: 10px; }
+.music-overview { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.overview-heading { position: absolute; top: 135px; left: 40px; }
+.overview-heading small { font-size: 9px; letter-spacing: .23em; color: var(--muted); }
+.overview-heading h2 { font-size: 19px; font-weight: 400; margin: 9px 0; letter-spacing: .12em; }
+.overview-heading p { font-size: 11px; color: var(--muted); }
+.overview-columns { position: absolute; inset: 0; }
+.overview-anchor { --overview-label-width: 160px; position: absolute; width: var(--overview-label-width); transform: translate(-50%, -100%); }
+.overview-column {
+  display: flex; width: max-content; position: relative;
+  background: color-mix(in srgb, var(--surface) 87%, transparent);
+  border-top: 1px solid var(--line); text-align: left;
+  pointer-events: auto; backdrop-filter: blur(12px);
+}
+.overview-column::after { content: ""; position: absolute; left: calc(var(--overview-label-width) / 2); top: 100%; height: 22px; border-left: 1px solid var(--line); }
+.overview-column-label { width: var(--overview-label-width); flex: 0 0 var(--overview-label-width); padding: 10px 12px 9px; border: 0; text-align: left; background: none; cursor: pointer; }
+.overview-column strong { display: block; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.overview-column small { display: block; margin-top: 5px; font-size: 9px; letter-spacing: .06em; color: var(--muted); }
+.overview-column[aria-current="true"] { box-shadow: inset 0 1px var(--accent); border-top-color: var(--accent); }
+.overview-enter-slot { width: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: width calc(420ms * var(--music-motion-scale, 1)) cubic-bezier(.4,0,.2,1), opacity calc(320ms * var(--music-motion-scale, 1)) ease, visibility 0s calc(420ms * var(--music-motion-scale, 1)); }
+.overview-enter { width: 76px; height: 100%; border: 0; border-left: 1px solid var(--line); background: none; font-size: 11px; white-space: nowrap; cursor: pointer; color: var(--accent); transform: translateX(-6px); transition: transform calc(420ms * var(--music-motion-scale, 1)) cubic-bezier(.4,0,.2,1); }
+.overview-column[data-expanded="true"] .overview-enter-slot { width: 76px; opacity: 1; visibility: visible; transition-delay: 0s; }
+.overview-column[data-expanded="true"] .overview-enter { transform: translateX(0); }
+.overview-column-label:focus-visible, .overview-enter:focus-visible { outline: 1px solid var(--accent); outline-offset: -3px; }
+.overview-return { bottom: 77px; pointer-events: auto; }
+.overview-controls { position: absolute; bottom: 76px; right: 40px; display: flex; align-items: center; gap: 22px; pointer-events: auto; }
+.overview-controls button { border: 1px solid var(--line); background: transparent; width: 36px; height: 32px; cursor: pointer; }
+.overview-controls span { font-size: 11px; color: var(--muted); }
+/* Keep the complete navigation row's dimensions. The persistent transport keeps
+   the same x/y coordinates, including portrait's explicit five grid tracks. */
+.music-topnav > :not(.minimal-transport), .music-view-toggle,
+.music-dev-panels, .library-status, #runtime-info {
+  transition: opacity calc(280ms * var(--music-motion-scale, 1)) ease,
+    transform calc(360ms * var(--music-motion-scale, 1)) cubic-bezier(.4,0,.2,1),
+    visibility 0s;
+}
+.music-app[data-overview="true"] .music-topnav > :not(.minimal-transport),
+.music-app[data-overview="true"] .music-view-toggle,
+.music-app[data-overview="true"] .music-dev-panels,
+.music-app[data-overview="true"] .library-status,
+.music-app[data-overview="true"] #runtime-info {
+  opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-6px);
+  transition-delay: 0s, 0s, calc(280ms * var(--music-motion-scale, 1));
+}
+.music-app[data-mode="detail"] .music-view-toggle { opacity: 0; visibility: hidden; pointer-events: none; }
+.music-app.reduce-motion .overview-enter-slot,
+.music-app.reduce-motion .overview-enter,
+.music-app.reduce-motion .music-topnav > :not(.minimal-transport),
+.music-app.reduce-motion .music-view-toggle,
+.music-app.reduce-motion .music-dev-panels,
+.music-app.reduce-motion .library-status,
+.music-app.reduce-motion #runtime-info { transition: none; }
+@media (max-width: 600px) {
+  .music-view-toggle { left: 22px; top: 164px; }
+  .overview-return { left: 22px; bottom: 50px; }
+  .overview-heading { left: 22px; top: 115px; }
+  .overview-heading h2 { font-size: 17px; }
+  .overview-anchor { --overview-label-width: 116px; }
+  .overview-column-label { padding: 8px; }
+  .overview-column strong { font-size: 11px; }
+  .overview-controls { right: 22px; bottom: 50px; gap: 12px; }
+  .overview-controls span { display: none; }
+}

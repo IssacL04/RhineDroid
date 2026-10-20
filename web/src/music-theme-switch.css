@@ -1,0 +1,134 @@
+/* One shared selection pill travels between the two theme labels. */
+.music-app .theme-switch {
+  position: relative;
+  isolation: isolate;
+  flex-shrink: 0;
+}
+
+.music-app .theme-switch::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc((100% - 10px) / 2);
+  border-radius: 5px;
+  background: var(--ink);
+  transform: translateX(0);
+  transition: transform calc(380ms * var(--music-motion-scale, 1)) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.music-app[data-theme="night"] .theme-switch::before {
+  transform: translateX(calc(100% + 4px));
+}
+
+.music-app .theme-switch button {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 auto;
+  justify-content: center;
+  transition: color calc(260ms * var(--music-motion-scale, 1)) ease, opacity calc(260ms * var(--music-motion-scale, 1)) ease;
+}
+
+.music-app .theme-switch button[aria-pressed="true"] {
+  background: transparent;
+}
+
+.music-app.reduce-motion .theme-switch::before,
+.music-app.reduce-motion .theme-switch button {
+  transition: none;
+}
+
+/* Give portrait controls their own row so both theme labels stay reachable. */
+.music-app[data-layout="portrait"] .music-header {
+  left: 20px;
+  right: 20px;
+  top: 22px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.music-app[data-layout="portrait"] .music-brand strong {
+  font-size: 24px;
+}
+
+.music-app[data-layout="portrait"] .music-brand > span {
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+.music-app[data-layout="portrait"] .music-topnav {
+  --song-cap: clamp(0px, calc(100vw - 320px), 280px);
+  display: grid;
+  grid-template-columns: 28px 28px 104px 28px minmax(0, 1fr);
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding-top: 0;
+}
+
+.music-app[data-layout="portrait"] .music-topnav > button {
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+}
+
+.music-app[data-layout="portrait"] .music-topnav > button > span,
+.music-app[data-layout="portrait"] .music-topnav kbd,
+.music-app[data-layout="portrait"] .music-topnav small {
+  display: none;
+}
+
+.music-app[data-layout="portrait"] .theme-switch {
+  display: flex;
+  width: 104px;
+  box-sizing: border-box;
+}
+
+.music-app[data-layout="portrait"] .theme-switch button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 5px 6px;
+  gap: 4px;
+}
+
+.music-app[data-layout="portrait"] .theme-switch span {
+  display: inline;
+}
+
+.music-app[data-layout="portrait"] .theme-dot {
+  flex-shrink: 0;
+}
+
+.music-app[data-layout="portrait"] .music-topnav .minimal-transport {
+  min-width: 0;
+  justify-content: flex-end;
+  margin-top: 0;
+  padding-left: 7px;
+  gap: 1px;
+}
+
+.music-app[data-layout="portrait"] .music-topnav .minimal-transport button:not(.transport-track) {
+  flex: 0 0 24px;
+  width: 24px;
+}
+
+.music-app[data-layout="portrait"] .music-topnav .transport-track {
+  margin-right: -1px;
+}
+
+.music-app[data-layout="portrait"] .library-status {
+  left: 22px;
+  top: 118px;
+  max-width: calc(100% - 44px);
+  font-size: 8px;
+  line-height: 1.6;
+}
+
+.music-app[data-layout="portrait"] .music-back {
+  left: 22px;
+  top: 118px;
+}

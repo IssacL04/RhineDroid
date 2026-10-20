@@ -1,0 +1,85 @@
+/* Growing this slot moves every preceding control left while playback stays put. */
+.music-topnav {
+  --song-cap: clamp(0px, calc(100vw - 760px), 240px);
+  flex-shrink: 0;
+}
+.music-topnav .minimal-transport button.transport-track {
+  display: block;
+  position: relative;
+  flex: none;
+  width: 0;
+  margin-right: -6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+  pointer-events: none;
+  opacity: 0;
+  transition: width calc(640ms * var(--music-motion-scale, 1)) cubic-bezier(0.4, 0, 0.2, 1), opacity calc(400ms * var(--music-motion-scale, 1)) ease;
+}
+.music-topnav .minimal-transport .transport-track.visible {
+  width: min(var(--song-width, 240px), var(--song-cap));
+  opacity: 1;
+  pointer-events: auto;
+}
+.transport-track > span {
+  display: block;
+  position: relative;
+  width: max-content;
+  max-width: max(0px, calc(var(--song-cap) - 14px));
+  padding-inline: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  line-height: 29px;
+  transform: translateX(18px);
+  transition: transform calc(640ms * var(--music-motion-scale, 1)) cubic-bezier(0.4, 0, 0.2, 1);
+}
+.transport-track.visible > span {
+  transform: translateX(0);
+}
+.transport-title-measure {
+  display: inline-flex;
+  width: max-content;
+  white-space: pre;
+  opacity: 0;
+  pointer-events: none;
+}
+.transport-title-measure > span {
+  display: inline-block;
+  flex: none;
+  padding: 0;
+  border: 0;
+}
+.transport-title-ellipsis {
+  position: absolute;
+  width: max-content;
+  white-space: pre;
+  visibility: hidden;
+  pointer-events: none;
+}
+.transport-track .transport-title-reel {
+  --rn-blur: 0.2;
+  --rn-edge-fade: 0.08em;
+  position: absolute;
+  left: 2px;
+  top: 0;
+  white-space: pre;
+}
+@media (max-width: 1100px) {
+  .music-topnav { --song-cap: clamp(0px, calc(100vw - 610px), 180px); }
+  .transport-track > span { font-size: 11px; }
+}
+@media (max-width: 700px) {
+  .music-topnav { --song-cap: clamp(0px, calc(100vw - 340px), 100px); }
+  .music-topnav .minimal-transport button.transport-track { margin-right: -1px; }
+  .transport-track > span { font-size: 10px; }
+}
+@media (max-width: 480px) {
+  .music-header { gap: 12px; }
+  .music-brand strong { font-size: clamp(18px, 5vw, 24px); }
+  .music-brand span { font-size: 6px; letter-spacing: 0.8px; }
+}
+.reduce-motion .music-topnav .minimal-transport button.transport-track,
+.reduce-motion .transport-track > span {
+  transition: none;
+}

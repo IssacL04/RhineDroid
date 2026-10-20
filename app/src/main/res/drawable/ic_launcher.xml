@@ -1,0 +1,6 @@
+<!-- API 33's monochrome layer is provided in drawable-v33/ic_launcher.xml. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" tools:ignore="MonochromeLauncherIcon">
+    <background android:drawable="@color/rhinedroid_icon_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>

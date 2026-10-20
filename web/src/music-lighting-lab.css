@@ -1,0 +1,249 @@
+.music-dev-panels {
+  position: absolute;
+  z-index: 8;
+  top: 160px;
+  left: 40px;
+  width: 272px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: calc(100dvh - 260px);
+  overflow: auto;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+
+.music-dev-panels:has(> :not([hidden])) { padding-bottom: 3px; }
+
+.lighting-lab {
+  flex: 0 0 auto;
+  min-width: 0;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--panel) 93%, transparent);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.035);
+  font-size: 11px;
+  line-height: 1.5;
+  user-select: none;
+  overscroll-behavior: contain;
+}
+
+.lighting-lab[hidden] { display: none; }
+
+.lighting-lab-timing-note {
+  margin: 2px 0 10px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.lighting-lab button {
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.lighting-lab-detail-note {
+  display: none;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.music-app[data-mode="detail"] .lighting-lab-detail-note {
+  display: block;
+}
+
+.lighting-lab-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
+  padding: 13px 7px 11px 15px;
+  text-align: left;
+  letter-spacing: 1.6px;
+  font-size: 9px !important;
+}
+
+.lighting-lab-header { display: flex; align-items: center; }
+.lighting-lab-close {
+  flex: 0 0 32px;
+  height: 32px;
+  margin-right: 5px;
+  font-size: 21px;
+  line-height: 1;
+  color: var(--muted) !important;
+}
+.lighting-lab-close:hover { color: var(--ink) !important; }
+.lighting-lab button:focus-visible { outline: 1px solid var(--accent); outline-offset: -3px; }
+.motion-lab-scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 9px; margin: 3px 0 10px; }
+.motion-lab-status { font-size: 10px; color: var(--muted); margin: 8px 0; }
+
+.lighting-lab-heading b {
+  margin-right: 5px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.lighting-lab-heading small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.lighting-lab-chevron {
+  font-size: 19px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.lighting-lab-controls {
+  padding: 0 15px 10px;
+}
+
+.lighting-lab[data-expanded="false"] .lighting-lab-controls {
+  display: none;
+}
+
+.lighting-lab-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.lighting-lab-modes button {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  text-align: left;
+  transition:
+    background 160ms,
+    border-color 160ms;
+}
+
+.lighting-lab-modes button b {
+  display: inline-block;
+  min-width: 19px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.lighting-lab-modes button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+}
+
+.lighting-lab-modes button[aria-pressed="true"] b {
+  color: var(--accent);
+}
+
+.lighting-lab-explanation {
+  margin: 11px 0 12px;
+  min-height: 67px;
+}
+
+.lighting-lab-explanation p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.lighting-lab-explanation .lighting-lab-tradeoff {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.lighting-lab-sliders {
+  display: grid;
+  gap: 0;
+}
+
+.lighting-lab-sliders label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+.lighting-lab-sliders output {
+  color: var(--muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lighting-lab-sliders input[type="range"] {
+  width: 100%;
+  height: 20px;
+  margin: 0;
+}
+
+.lighting-lab-sliders input:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.lighting-lab-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.lighting-lab-actions button {
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 6px 10px;
+  font-size: 10px;
+}
+
+.lighting-lab-compare[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+@media (max-width: 1100px) {
+  .music-dev-panels {
+    left: 25px;
+    top: 140px;
+    width: 254px;
+  }
+}
+
+@media (max-width: 760px), (max-height: 650px) {
+  .music-dev-panels {
+    width: 248px;
+  }
+
+  .lighting-lab:not([data-expanded="true"]) .lighting-lab-controls {
+    display: none;
+  }
+
+}
+
+@media (max-width: 540px) {
+  .music-dev-panels {
+    top: 125px;
+    left: 20px;
+    width: min(248px, calc(100vw - 40px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lighting-lab-modes button {
+    transition: none;
+  }
+}
+
+/* Leave the shared brand/status/return area clear at both layout extremes. */
+@media (min-width: 1800px) {
+  .music-dev-panels { top: 190px; max-height: calc(100dvh - 290px); }
+}
+.music-app[data-layout="portrait"] .music-dev-panels { top: 150px; max-height: calc(100dvh - 235px); }

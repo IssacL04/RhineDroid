@@ -1,0 +1,204 @@
+material {
+    name : RhineVulkanArchiveGlass,
+    blending : transparent,
+    depthWrite : false,
+    shadingModel : unlit,
+    instanced : true,
+    flipUV : false,
+    requires : [ uv0, custom0 ],
+    variables : [ coverUv, surfaceNormal, shade, casePosition ],
+    doubleSided : true,
+    parameters : [
+        { type : "float4[217]", name : cells, precision : high },
+        { type : "float4[217]", name : origins, precision : high },
+        { type : "float4[217]", name : velocities, precision : high },
+        { type : "float4[217]", name : accelerations, precision : high },
+        { type : float2, name : travel, precision : high },
+        { type : float, name : clock, precision : high },
+        { type : float, name : opening, precision : high },
+        { type : float2, name : openingGrid },
+        { type : float2, name : poolGrid },
+        { type : float, name : inspection, precision : high },
+        { type : float, name : idle },
+        { type : float, name : placement },
+        { type : float4, name : guidance },
+        { type : float2, name : guideCenter },
+        { type : float, name : rotation },
+        { type : float, name : kind },
+        { type : float, name : night },
+        { type : float, name : optics },
+        { type : float, name : focus },
+        { type : float2, name : focusCenter },
+        { type : float, name : selectedReady },
+        { type : sampler2d, name : selectedCover },
+        { type : sampler2d, name : covers }
+    ]
+}
+vertex {
+    float focusWeight(float lanes, float rows) {
+        return 1.0-smoothstep(1.15,4.5,sqrt(lanes*lanes+rows*rows/9.0));
+    }
+    float ease5(float value) { float t=clamp(value,0.0,1.0); return t*t*t*(10.0+t*(-15.0+6.0*t)); }
+    float bell(float x,float width) { return exp(-0.5*(x/width)*(x/width)); }
+    float introRowOffset(float time) {
+        return time<24.15 ? -9.0+27.0*ease5((time-22.2)/1.95) : 18.0*(1.0-ease5((time-24.15)/1.6));
+    }
+    float introEntryZ(float time) {
+        float entry=clamp((time-21.92)/0.75,0.0,1.0);
+        return -23.0*(1.0-entry)*(1.0-entry);
+    }
+    float selectionBand(float index,float rows,float center) {
+        float row=mod(index,rows)-floor(rows/2.0);
+        return 1.0-smoothstep(1.0,2.0,abs(row-center));
+    }
+    float shoulder(float row,float time) {
+        float age=time-25.05-abs(row)*0.065;
+        float envelope=max(-0.42,2.15-0.17*(sqrt(row*row+1.0)-1.0));
+        float ring=age>0.0?sin(age*5.1)*exp(-age*1.3):0.0;
+        float rebound=mix(0.06,0.18,ease5((time-26.2)/0.36));
+        return envelope*(ease5(age/0.62)+rebound*ring*ease5(age/0.16));
+    }
+    float strength(float lane) { return 0.25+0.75*bell(lane,0.55); }
+    float packet(float distance) { return 2.5*bell(distance,3.8)-0.58*bell(distance-6.0,3.5); }
+    float openingField(float row,float lane,float time) {
+        float t=time-22.0,phase=row+(lane-2.0)*0.65;
+        float wave=ease5(t/0.32)*(packet(phase-3.0-t*19.0)*(1.0-ease5((t-2.15)/0.65))
+            +packet(phase-32.0+(t-2.3)*24.0)*ease5((t-2.17)/0.32)*(1.0-ease5((t-3.5)/0.85)));
+        float handoff=ease5((time-24.95)/0.45),selection=ease5((time-25.4)/0.95);
+        return 0.62*wave*(1.0-handoff)+shoulder(row-12.0,time+0.3*handoff*(1.0-selection))*mix(1.0,strength(lane-2.0),selection);
+    }
+    void materialVertex(inout MaterialVertexInputs material) {
+        uint instance = uint(getInstanceIndex());
+        bool opening = materialParams.opening >= 0.0;
+        float row = opening ? mod(float(instance),materialParams.openingGrid.y)-floor(materialParams.openingGrid.y/2.0) : 0.0;
+        float lane = opening ? floor(float(instance)/materialParams.openingGrid.y)-floor(materialParams.openingGrid.x/2.0) : 0.0;
+        uint slot = opening ? uint(mod(lane+floor(materialParams.poolGrid.x/2.0)+materialParams.poolGrid.x,materialParams.poolGrid.x)*materialParams.poolGrid.y
+            +mod(row+floor(materialParams.poolGrid.y/2.0)+materialParams.poolGrid.y,materialParams.poolGrid.y)) : instance % 217u;
+        float4 cell = materialParams.cells[slot];
+        float seconds = max(0.001, materialParams.travel.y);
+        float t = clamp((materialParams.clock - materialParams.travel.x) / seconds, 0.0, 1.0);
+        float t2 = t * t, t3 = t2 * t, t4 = t3 * t, t5 = t4 * t;
+        float eased = 10.0 * t3 - 15.0 * t4 + 6.0 * t5;
+        float3 offset = mix(materialParams.origins[slot].xyz, cell.xyz, eased)
+            + materialParams.velocities[slot].xyz * seconds * (t - 6.0 * t3 + 8.0 * t4 - 3.0 * t5)
+            + 0.5 * materialParams.accelerations[slot].xyz * seconds * seconds * (t2 - 3.0 * t3 + 3.0 * t4 - t5);
+        if (!opening) { row=cell.z/0.62; lane=cell.x/5.2; }
+        bool selected = opening ? row==0.0 && lane==0.0 : slot == 108u;
+        float extent=1.0;
+        if(opening) {
+            float time=materialParams.opening,blend=ease5((time-25.3)/1.42);
+            float lift=0.4*ease5((time-25.58)/0.82)+2.95*ease5((time-27.55)/1.3);
+            offset.x=lane*5.2; offset.z=row*0.62+introEntryZ(time);
+            // Match the ordinary pool at the handoff; extra rows fold away with the wave.
+            extent=(abs(row)>floor(materialParams.poolGrid.y/2.0) || abs(lane)>floor(materialParams.poolGrid.x/2.0) || cell.w==0.0) ? 1.0-blend : 1.0;
+            if (cell.w==0.0) cell.w=-1.0;
+            offset.y=-4.6+mix(openingField(row+12.0,lane+2.0,time),shoulder(row,26.56)*strength(lane),blend)
+                +(selected?mix(lift,0.9,blend):0.0);
+        }
+        float worldRow=materialParams.origins[slot].w,worldLane=materialParams.velocities[slot].w;
+        if(materialParams.idle>0.0001) offset.y += materialParams.idle*(0.075*sin(materialParams.clock*6.2831853/8.0+worldRow*0.3-worldLane*0.45)
+            +0.027*sin(materialParams.clock*6.2831853/13.0-worldRow*0.17+worldLane*0.3));
+        float3 p = getPosition().xyz;
+        float focusGain=materialParams.focus>0.5 && !opening ? (selected ? 1.0 : focusWeight(
+            (offset.x-materialParams.focusCenter.x)/5.2,(offset.z-materialParams.focusCenter.y)/0.62)) : 1.0;
+        material.casePosition = float4(p, 1.25*(1.0-focusGain));
+        p=(p-float3(0.0,1.85,0.0))*extent+float3(0.0,1.85,0.0);
+        float3 normal = getCustom0().xyz;
+        float slope=materialParams.accelerations[slot].w*(1.0-materialParams.placement);
+        if (opening) {
+            float time=materialParams.opening,blend=ease5((time-25.3)/1.42);
+            float openingSlope=openingField(row+12.5,lane+2.0,time)-openingField(row+11.5,lane+2.0,time);
+            slope=mix(openingSlope*0.024,slope,blend);
+        }
+        // GLSL columns must preserve the source model's positive X rotation.
+        mat2 tilt=mat2(cos(slope),sin(slope),-sin(slope),cos(slope));
+        p.yz=tilt*p.yz; normal.yz=tilt*normal.yz;
+        if (selected) {
+            float angle = materialParams.rotation;
+            mat2 turn = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+            p.xz = turn * p.xz;
+            normal.xz = turn * normal.xz;
+        }
+        p += offset;
+        if (cell.w == 0.0) p = float3(0.0, -1000.0, 0.0);
+        material.worldPosition = getWorldFromModelMatrix() * float4(p, 1.0);
+        float2 uv = material.uv0;
+        // Four-pixel tile insets keep the complete mip footprint inside its own cover.
+        material.coverUv = float4((float2(mod(abs(cell.w) - 1.0, 16.0), floor((abs(cell.w) - 1.0) / 16.0)) + clamp(uv, 0.03125, 0.96875)) / float2(16.0, 16.0), 0.0, focusGain);
+        float lightRow=opening ? introRowOffset(materialParams.opening) : 0.0;
+        material.coverUv.z = selectionBand(float(instance),opening ? materialParams.openingGrid.y : materialParams.poolGrid.y,lightRow)
+            *(opening ? ease5((materialParams.opening-21.92)/0.18) : 1.0);
+        float lightZ=opening ? lightRow*0.62 : materialParams.guideCenter.y;
+        float ribbon=exp(-0.693147*pow(((opening?row*0.62:offset.z)-lightZ-materialParams.guidance.z*0.62)/max(0.1,materialParams.guidance.y*0.31),2.0))
+            *exp(-pow((offset.x-materialParams.guideCenter.x)/27.0,6.0));
+        material.surfaceNormal = float4(normal, mix(1.0,0.65+0.25*materialParams.guidance.w+0.10*clamp(ribbon*materialParams.guidance.x,0.0,2.0),clamp(materialParams.guidance.x,0.0,1.0)));
+        material.shade = float4(selected ? 1.0 : 0.0, cell.w, uv.x, uv.y);
+    }
+}
+fragment {
+    float clearWindow(float x, float y) {
+        return (1.0-smoothstep(1.50,1.55,abs(x-0.17)))*(1.0-smoothstep(1.50,1.55,abs(y-1.85)));
+    }
+    float topRibbon(float x, float y) {
+        return exp(-max(0.0,3.525-y)*24.0)*(0.22+0.78*exp(-max(0.0,x+2.225)*1.7));
+    }
+    float acrylicOpacity(float window, float spine, float rim, float lid) {
+        return mix(0.32-0.06*lid,0.012+0.008*lid,window)+0.22*spine+0.20*rim;
+    }
+    float curveGROW(float time) { if(time<=34.240000000)return 0.000000000;if(time<34.400000000){float t=(time-34.240000000)/0.160000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.000000000+(t*t*t-2.0*t*t+t)*0.000000000+(-2.0*t*t*t+3.0*t*t)*0.190000000+(t*t*t-t*t)*0.215094340;}if(time<34.640000000){float t=(time-34.400000000)/0.240000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.190000000+(t*t*t-2.0*t*t+t)*0.322641509+(-2.0*t*t*t+3.0*t*t)*0.570000000+(t*t*t-t*t)*0.234496883;}if(time<34.960000000){float t=(time-34.640000000)/0.320000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.570000000+(t*t*t-2.0*t*t+t)*0.312662511+(-2.0*t*t*t+3.0*t*t)*0.790000000+(t*t*t-t*t)*0.163428571;}if(time<35.280000000){float t=(time-34.960000000)/0.320000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.790000000+(t*t*t-2.0*t*t+t)*0.163428571+(-2.0*t*t*t+3.0*t*t)*0.920000000+(t*t*t-t*t)*0.075300546;}if(time<35.600000000){float t=(time-35.280000000)/0.320000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.920000000+(t*t*t-2.0*t*t+t)*0.075300546+(-2.0*t*t*t+3.0*t*t)*0.973000000+(t*t*t-t*t)*0.029365735;}if(time<36.040000000){float t=(time-35.600000000)/0.440000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.973000000+(t*t*t-2.0*t*t+t)*0.040377886+(-2.0*t*t*t+3.0*t*t)*1.000000000+(t*t*t-t*t)*0.000000000;}return 1.000000000;}
+float curveREVEAL(float time) { if(time<=38.840000000)return 0.000000000;if(time<38.920000000){float t=(time-38.840000000)/0.080000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.000000000+(t*t*t-2.0*t*t+t)*0.000000000+(-2.0*t*t*t+3.0*t*t)*0.280000000+(t*t*t-t*t)*0.252549020;}if(time<39.000000000){float t=(time-38.920000000)/0.080000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.280000000+(t*t*t-2.0*t*t+t)*0.252549020+(-2.0*t*t*t+3.0*t*t)*0.510000000+(t*t*t-t*t)*0.159230769;}if(time<39.160000000){float t=(time-39.000000000)/0.160000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.510000000+(t*t*t-2.0*t*t+t)*0.318461538+(-2.0*t*t*t+3.0*t*t)*0.740000000+(t*t*t-t*t)*0.213953488;}if(time<39.320000000){float t=(time-39.160000000)/0.160000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.740000000+(t*t*t-2.0*t*t+t)*0.213953488+(-2.0*t*t*t+3.0*t*t)*0.940000000+(t*t*t-t*t)*0.069767442;}if(time<39.560000000){float t=(time-39.320000000)/0.240000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.940000000+(t*t*t-2.0*t*t+t)*0.104651163+(-2.0*t*t*t+3.0*t*t)*1.000000000+(t*t*t-t*t)*0.000000000;}return 1.000000000;}
+float curveRETRACT(float time) { if(time<=37.720000000)return 1.000000000;if(time<37.880000000){float t=(time-37.720000000)/0.160000000;return (2.0*t*t*t-3.0*t*t+1.0)*1.000000000+(t*t*t-2.0*t*t+t)*0.000000000+(-2.0*t*t*t+3.0*t*t)*0.720000000+(t*t*t-t*t)*-0.350122592;}if(time<38.000000000){float t=(time-37.880000000)/0.120000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.720000000+(t*t*t-2.0*t*t+t)*-0.262591944+(-2.0*t*t*t+3.0*t*t)*0.380000000+(t*t*t-t*t)*-0.217600000;}if(time<38.120000000){float t=(time-38.000000000)/0.120000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.380000000+(t*t*t-2.0*t*t+t)*-0.217600000+(-2.0*t*t*t+3.0*t*t)*0.220000000+(t*t*t-t*t)*-0.106666667;}if(time<38.240000000){float t=(time-38.120000000)/0.120000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.220000000+(t*t*t-2.0*t*t+t)*-0.106666667+(-2.0*t*t*t+3.0*t*t)*0.140000000+(t*t*t-t*t)*-0.061290926;}if(time<38.400000000){float t=(time-38.240000000)/0.160000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.140000000+(t*t*t-2.0*t*t+t)*-0.081721235+(-2.0*t*t*t+3.0*t*t)*0.075000000+(t*t*t-t*t)*-0.045598349;}if(time<38.640000000){float t=(time-38.400000000)/0.240000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.075000000+(t*t*t-2.0*t*t+t)*-0.068397524+(-2.0*t*t*t+3.0*t*t)*0.024000000+(t*t*t-t*t)*-0.036504293;}if(time<38.840000000){float t=(time-38.640000000)/0.200000000;return (2.0*t*t*t-3.0*t*t+1.0)*0.024000000+(t*t*t-2.0*t*t+t)*-0.030420244+(-2.0*t*t*t+3.0*t*t)*0.000000000+(t*t*t-t*t)*0.000000000;}return 0.000000000;}
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        float light = 0.56 + 0.44 * abs(dot(normalize(variable_surfaceNormal.xyz), normalize(float3(-0.5, 0.8, 0.4))));
+        float3 paper = float3(0.62, 0.63, 0.59);
+        if (materialParams.kind > 1.5) {
+            if (variable_shade.y > 0.0) paper = texture(materialParams_covers, variable_coverUv.xy, variable_casePosition.w).rgb;
+            if (variable_shade.x > 0.5 && materialParams.selectedReady > 0.5)
+                paper = texture(materialParams_selectedCover, variable_shade.zw).rgb;
+        }
+        if(variable_shade.x>0.5 && materialParams.kind>1.5 && materialParams.selectedReady>0.5 && materialParams.inspection>=0.0) {
+            float inspectionTime=34.12+max(0.0,materialParams.clock-materialParams.inspection)*1.5;
+            float clarity=curveREVEAL(inspectionTime);
+            if(clarity<0.999) {
+                float2 uv=variable_shade.zw;
+                // Trilinear mip filtering softens one image, without four shifted copies.
+                paper=textureLod(materialParams_selectedCover,uv,3.0*(1.0-clarity)).rgb;
+                float2 position=float2(0.17,1.85)+(uv-0.5)*3.06;
+                float2 from=float2(-1.6,0.5),to=float2(1.98,3.24),axis=to-from;
+                float along=dot(position-from,axis)/dot(axis,axis);
+                float perpendicular=abs((position.x-from.x)*axis.y-(position.y-from.y)*axis.x)/length(axis);
+                float grow=curveGROW(inspectionTime),remaining=curveRETRACT(inspectionTime);
+                float line=(1.0-smoothstep(0.008,0.025,perpendicular))*step(1.0-remaining,along)*step(along,grow);
+                paper=mix(paper,float3(0.95,0.65,0.31),line);
+            }
+        }
+        paper *= variable_surfaceNormal.w;
+        float3 frame = mix(float3(0.80, 0.79, 0.73), float3(0.075, 0.105, 0.14), materialParams.night);
+        float3 color = materialParams.kind > 1.5 ? paper : frame * light;
+        float alpha = 1.0;
+        if (materialParams.kind < 1.5) {
+            float rim=pow(clamp(1.0-abs(dot(normalize(variable_surfaceNormal.xyz),getWorldViewVector())),0.0,1.0),3.0);
+            float spine=materialParams.kind<0.5 ? variable_shade.z : 0.0;
+            float lid=step(0.5,materialParams.kind);
+            float2 local=variable_casePosition.xy;
+            float window=clearWindow(local.x,local.y);
+            float top=topRibbon(local.x,local.y);
+            float lip=1.0-smoothstep(0.012,0.036,abs(max(abs(local.x-0.17),abs(local.y-1.85))-1.53));
+            // Model-space masks keep the clear insert, satin frame and transported top light attached during the wave and inspection.
+            float highlight=(spine*(0.55+0.45*rim)+top*0.9)*variable_coverUv.z*clamp(materialParams.guidance.x,0.0,2.0)*(0.3+0.7*variable_coverUv.w);
+            float3 reflection=mix(float3(0.92,0.96,1.0),float3(0.48,0.66,0.82),materialParams.night);
+            float3 scatter=mix(float3(1.0,0.75,0.40),float3(0.62,0.79,1.0),materialParams.night);
+            color=frame*light*mix(0.86,1.0,lid)*(1.0-0.12*lip)+reflection*(rim*0.22+top*0.08);
+            color+=scatter*highlight;
+            if (materialParams.focus > 0.5 && materialParams.opening < 0.0)
+                color+=reflection*0.12*variable_coverUv.w*(rim+0.6*top);
+            if (materialParams.optics > 0.0) {
+                float sweep=exp(-pow((local.x+local.y*0.55-0.4)/0.70,2.0));
+                color+=reflection*materialParams.optics*(0.35*rim+top*(0.22+variable_coverUv.z*clamp(materialParams.guidance.x,0.0,2.0))+0.10*sweep);
+            }
+            alpha=clamp(acrylicOpacity(window,spine,rim,lid)+0.06*lip+0.08*top+0.16*highlight,0.0,0.94);
+        }
+        material.baseColor = float4(color * alpha, alpha);
+    }
+}

@@ -1,0 +1,35 @@
+#inspection-lines {
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  filter: none;
+}
+#inspection-point {
+  fill: #24221f;
+}
+.viewer-surface {
+  position: absolute;
+  top: 144px;
+  right: 62px;
+  z-index: 3;
+  display: flex;
+  border: 1px solid #bcb6ac;
+}
+.viewer-surface button {
+  padding: 10px 22px;
+  font-size: 14px;
+  color: #626158;
+  background: transparent;
+}
+.viewer-surface button + button {
+  border-left: 1px solid #bcb6ac;
+}
+.viewer-surface button[aria-pressed="true"] {
+  color: #f5f1e9;
+  background: #353b30;
+}
+.viewer-surface button:disabled {
+  opacity: 0.45;
+}
+.viewer-surface button:focus-visible {
+  outline-offset: 4px;
+}

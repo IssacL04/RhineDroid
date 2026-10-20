@@ -1,0 +1,50 @@
+# Local toolchains, dependencies and generated output
+.gradle/
+.gradle-user/
+.kotlin/
+.npm-cache/
+.tools/
+.local-toolchain/
+local.properties
+**/build/
+node_modules/
+/web/dist/
+/app/src/main/assets/vulkan/archive.mesh
+
+# Local deliveries and user-supplied diagnostics / reference media
+/deliverables/
+/mobile_log/
+*.apk
+*.aab
+*.mp4
+*.mov
+*.webm
+
+# Credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+signing.properties
+
+# Editor state and temporary files
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+__pycache__/
+*.py[cod]
+*.log
+*.hprof
+*.heapdump
+*.tmp
+*.temp
+*.bak
+*.blend[0-9]
+*.orig
+*.rej
+*~

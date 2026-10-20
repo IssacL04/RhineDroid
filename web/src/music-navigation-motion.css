@@ -1,0 +1,134 @@
+#album-ticks.music-ticks {
+  --tick-height: 30px;
+  --tick-rest: 10px;
+  --tick-hover: 22px;
+  --tick-width: 3px;
+  --tick-gap: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  height: var(--tick-height);
+  overflow: visible;
+}
+
+#album-ticks.music-ticks > button {
+  position: relative;
+  flex: 0 0 auto;
+  width: 0;
+  min-width: 0;
+  height: var(--tick-height);
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+  transform: scaleY(.2);
+  pointer-events: none;
+  transition:
+    width calc(560ms * var(--music-motion-scale, 1)) cubic-bezier(.22,.65,.28,1),
+    margin-left calc(560ms * var(--music-motion-scale, 1)) cubic-bezier(.22,.65,.28,1),
+    transform calc(560ms * var(--music-motion-scale, 1)) cubic-bezier(.22,.65,.28,1),
+    opacity calc(360ms * var(--music-motion-scale, 1)) ease;
+  transition-delay: calc(var(--tick-delay, 0ms) * var(--music-motion-scale, 1));
+}
+
+#album-ticks.music-ticks > button[data-visible="true"] {
+  width: var(--tick-width);
+  margin-left: var(--tick-gap);
+  opacity: 1;
+  transform: scaleY(1);
+  pointer-events: auto;
+}
+
+#album-ticks.music-ticks > button[data-slot="0"] {
+  margin-left: 0;
+}
+
+#album-ticks.music-ticks > button::before {
+  content: none;
+}
+
+#album-ticks.music-ticks > button::after {
+  content: "";
+  position: absolute;
+  inset: -7px -4px;
+}
+
+#album-ticks.music-ticks .music-tick-mark {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: var(--tick-rest);
+  transform: translateY(-50%);
+  background: var(--ink);
+  opacity: .28;
+  pointer-events: none;
+  transition: height calc(320ms * var(--music-motion-scale, 1)) ease, background-color calc(320ms * var(--music-motion-scale, 1)) ease, opacity calc(320ms * var(--music-motion-scale, 1)) ease;
+}
+
+#album-ticks.music-ticks > button:not(.active):is(:hover, :focus-visible) .music-tick-mark {
+  height: var(--tick-hover);
+  background: var(--accent);
+  opacity: .8;
+}
+
+#album-ticks.music-ticks > button:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 5px;
+}
+
+#album-ticks.music-ticks .music-tick-indicator {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--tick-width);
+  height: var(--tick-height);
+  background: var(--ink);
+  transform: translate3d(0, -50%, 0);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: transform calc(560ms * var(--music-motion-scale, 1)) cubic-bezier(.2,.7,.2,1), opacity calc(240ms * var(--music-motion-scale, 1)) ease;
+}
+
+#album-ticks.music-ticks .music-tick-indicator[data-visible="true"] {
+  opacity: 1;
+}
+
+#selection-total.music-rolling-number,
+#genre-total.music-rolling-number {
+  display: inline-flex;
+  vertical-align: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 700px) {
+  #album-ticks.music-ticks {
+    --tick-height: 21px;
+    --tick-rest: 8px;
+    --tick-hover: 16px;
+    --tick-width: 2px;
+    --tick-gap: 6px;
+  }
+}
+
+#album-ticks.music-ticks[data-reduced="true"] > button,
+#album-ticks.music-ticks[data-reduced="true"] .music-tick-mark,
+#album-ticks.music-ticks[data-reduced="true"] .music-tick-indicator {
+  transition: none;
+  transition-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #album-ticks.music-ticks > button,
+  #album-ticks.music-ticks .music-tick-mark,
+  #album-ticks.music-ticks .music-tick-indicator {
+    transition: none;
+    transition-delay: 0ms;
+  }
+}

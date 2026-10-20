@@ -1,0 +1,37 @@
+{
+  "name": "rhinedroid-ui",
+  "version": "0.4.8",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc && vite build",
+    "build:android": "npm run build",
+    "preview": "vite preview --host 127.0.0.1",
+    "check:android": "node --experimental-strip-types --test scripts/check-android-demo.mjs && node --experimental-strip-types scripts/check-android-native.mjs && node scripts/check-native-vulkan.mjs && node scripts/check-music-song-transition-ui.mjs",
+    "check:interaction": "node scripts/check-music-motion-speed.mjs && node scripts/check-music-ui-motion.mjs && node scripts/check-music-wheel-navigation.mjs && node scripts/check-music-presentation.mjs && node scripts/check-music-archive-motion.mjs && node scripts/check-music-column-position.mjs && node scripts/check-music-real-columns.mjs && node scripts/check-music-real-column-runtime.mjs",
+    "check:overview": "node scripts/check-music-overview.mjs && node scripts/check-music-overview-ui.mjs",
+    "check:cover": "node scripts/check-music-cover.mjs && node scripts/check-music-model.mjs",
+    "check:lighting": "node scripts/check-music-lighting.mjs && node scripts/check-music-row-lighting.mjs && node scripts/check-music-row-motion.mjs && node scripts/check-music-boot-timing.mjs",
+    "check:viewport": "node --experimental-strip-types scripts/check-viewport.mjs",
+    "check:startup": "node scripts/check-android-startup.mjs && node scripts/check-music-renderer-startup.mjs && node scripts/check-quality.mjs",
+    "check": "npm run check:android && npm run check:interaction && npm run check:overview && npm run check:cover && npm run check:lighting && npm run check:viewport && npm run check:startup",
+    "check:composition": "node --experimental-strip-types scripts/check-vulkan-composition.mjs"
+  },
+  "dependencies": {
+    "@kitlangton/rolling-number": "0.4.1",
+    "music-metadata": "^11.15.0",
+    "opencc-js": "^1.4.2",
+    "three": "^0.183.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.183.0",
+    "prettier": "^3.9.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

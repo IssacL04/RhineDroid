@@ -1,0 +1,26 @@
+.document-redacted {
+  position: relative;
+}
+
+.document-redaction-window {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.document-redaction-ink {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: #20221d;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .document-redaction-window {
+    display: none;
+  }
+}

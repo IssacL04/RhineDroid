@@ -1,0 +1,81 @@
+/* Trial navigation: individual marks grow; the scale itself scrolls. */
+#album-ticks.music-ruler {
+  --tick-height: 30px;
+  --tick-rest: 10px;
+  --tick-hover: 22px;
+  --tick-width: 3px;
+  --tick-gap: 8px;
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  isolation: isolate;
+  height: var(--tick-height);
+  overflow: hidden;
+  gap: 0;
+  transition: none;
+}
+
+#album-ticks.music-ruler[data-overflow="true"] {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--tick-gap), #000 calc(100% - var(--tick-gap)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--tick-gap), #000 calc(100% - var(--tick-gap)), transparent);
+}
+
+#album-ticks.music-ruler > button.music-ruler-slot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--tick-width);
+  height: var(--tick-height);
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  transition: none;
+}
+
+#album-ticks.music-ruler > button::before {
+  content: none;
+}
+
+#album-ticks.music-ruler > button::after {
+  content: "";
+  position: absolute;
+  inset: 0 calc(var(--tick-gap) / -2);
+}
+
+#album-ticks.music-ruler > button:disabled {
+  pointer-events: none;
+}
+
+#album-ticks.music-ruler .music-ruler-mark {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: var(--ruler-height, var(--tick-rest));
+  transform: translateY(-50%);
+  opacity: var(--ruler-opacity, 0.28);
+  background: var(--ink);
+  pointer-events: none;
+}
+
+#album-ticks.music-ruler > button:not(.active):is(:hover, :focus-visible) .music-ruler-mark {
+  background: var(--accent);
+}
+
+#album-ticks.music-ruler > button:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+  #album-ticks.music-ruler {
+    --tick-height: 21px;
+    --tick-rest: 8px;
+    --tick-hover: 16px;
+    --tick-width: 2px;
+    --tick-gap: 6px;
+  }
+}

@@ -1,0 +1,186 @@
+/* Android owns system/IME insets; CSS uses the resulting WebView rectangle. */
+.music-app { -webkit-tap-highlight-color: transparent; }
+.music-app .music-header { top: 12px; left: 20px; right: 20px; gap: 12px; align-items: center; }
+.music-app .music-brand strong { font-size: 23px; }
+.music-app .music-brand span { font-size: 8px; letter-spacing: 1.2px; }
+.music-app .music-topnav { gap: 8px; padding: 0; min-width: 0; flex-shrink: 1; }
+.music-app .music-topnav > button,
+.music-app .theme-switch button,
+.music-app .minimal-transport > button { min-width: 48px; min-height: 48px; padding: 8px; }
+.music-app .theme-switch { height: 48px; }
+.music-app .theme-switch button { font-size: 11px; }
+.music-app .theme-switch button::after { display: none; }
+.music-app .minimal-transport { gap: 0; }
+.music-app #transport-track { max-width: 140px; min-width: 0; }
+.music-app .music-topnav > button > span { display: none; }
+.music-app .library-status { top: 76px; left: 22px; font-size: 9px; }
+.music-app .music-view-toggle { top: 102px; left: 20px; min-height: 48px; padding: 10px 0; }
+.music-app kbd, .music-app .music-keyhint { display: none; }
+.music-app:not([data-layout="portrait"]) .album-callout { left: 64%; right: 20px; top: 29%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.music-app .album-callout .music-eyebrow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.music-app .album-callout h1 { font-size: clamp(23px, 3.4vw, 38px); margin: 12px 0 8px; }
+.music-app .selection-artist { margin-bottom: 10px; font-size: 12px; }
+.music-app .selection-meta { gap: 10px; font-size: 10px; }
+.music-app .album-callout .open-album { min-height: 48px; margin-top: 8px; padding: 10px 0; }
+.music-app .music-navigation { left: 20px; bottom: 35px; gap: 14px; grid-template-columns: minmax(74px, .55fr) minmax(0, 1fr) minmax(0, 1fr); }
+.music-app .music-counter b { font-size: 34px; }
+.music-app .music-counter .music-eyebrow { font-size: 8px; }
+.music-app .album-stepper { gap: 6px; min-width: 0; max-width: 100%; }
+.music-app .album-stepper > button,
+.music-app .genre-stepper > button,
+.music-app .overview-controls button { min-width: 48px; min-height: 48px; }
+.music-app .genre-stepper { gap: 4px; min-width: 0; }
+.music-app .genre-stepper > div { min-width: 0; max-width: 100%; }
+.music-app .genre-stepper #genre-name { min-height: 48px; max-width: 100%; padding: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.music-app .album-stepper > button, .music-app .genre-stepper > button { flex-shrink: 0; }
+.music-app .music-bottomline { left: 20px; right: 20px; bottom: 10px; font-size: 8px; }
+.music-app .music-back { top: 74px; left: 20px; min-height: 48px; padding: 8px 0; font-size: 11px; }
+.music-app .card-caption { left: 20px; bottom: 35px; gap: 5px; }
+.music-app .music-detail { --detail-content-top: 85px; }
+.music-app .music-detail #album-detail-content { left: 53%; right: 20px; top: 85px; bottom: 30px; padding-right: 6px; }
+.music-app .album-facts { margin: 12px 0; gap: 12px; }
+.music-app #album-detail-content > h1 { font-size: 25px; }
+.music-app .music-tabs button { min-height: 48px; }
+.music-app .track-row { min-height: 48px; }
+.music-app .track-name strong { font-size: 12px; }
+.music-app .track-name small { font-size: 10px; }
+.music-app .music-panel-scrim { padding: 12px; }
+.music-app .music-panel { width: min(620px, 100%); max-height: 100%; padding: 18px 22px; }
+.music-app .panel-heading { margin-bottom: 14px; }
+.music-app .panel-heading h2 { font-size: 21px; }
+.music-app .panel-heading > button { width: 48px; height: 48px; }
+.music-app .settings-row { min-height: 48px; }
+.music-app .album-result { min-height: 64px; }
+.music-app .genre-filters button { min-height: 48px; }
+.music-app .theme-cards button { min-height: 64px; }
+.music-app .overview-heading { left: 20px; top: 76px; }
+.music-app .overview-heading p { display: none; }
+.music-app .overview-return { left: 20px; bottom: 30px; min-height: 48px; }
+.music-app .overview-controls { right: 20px; bottom: 30px; gap: 12px; }
+.music-app .overview-controls span { display: none; }
+.music-app .overview-column-label, .music-app .overview-enter { min-height: 48px; }
+.android-rotate { display: none; }
+@media (max-height: 410px) and (orientation: landscape) {
+  .music-app .music-brand strong { font-size: 20px; }
+  .music-app .music-brand span { display: none; }
+  .music-app .library-status { top: 65px; }
+  .music-app .music-view-toggle { top: 85px; font-size: 10px !important; }
+  .music-app .music-navigation { bottom: 27px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .music-app .music-counter { display: none; }
+  .music-app .genre-stepper { gap: 0; }
+  .music-app .album-callout { top: 25%; }
+  .music-app .selection-meta { display: none; }
+  .music-app .selection-rule { font-size: 8px; }
+  .music-app .album-callout h1 { font-size: 25px; }
+  .music-app .music-detail #album-detail-content { top: 70px; bottom: 25px; }
+  .music-app .music-back { top: 60px; }
+  .music-app .card-caption small { display: none; }
+  .music-app .overview-heading { top: 65px; }
+  .music-app .overview-heading h2 { font-size: 15px; }
+}
+@media (max-width: 700px) and (orientation: landscape) {
+  .music-app .music-header { left: 12px; right: 12px; }
+  .music-app .music-topnav { gap: 2px; }
+  .music-app .theme-switch button span { display: none; }
+  .music-app #transport-track { display: none; }
+  .music-app .music-brand strong { font-size: 18px; }
+  .music-app .album-callout { right: 12px; }
+  .music-app .album-callout h1 { font-size: 22px; }
+  .music-app .music-navigation { left: 12px; gap: 5px; }
+}
+@media (max-height: 480px) and (orientation: landscape) {
+  .music-app:not([data-layout="portrait"]) .album-callout { top: 70px; }
+  .music-app .album-callout .selection-rule { padding: 4px 0; margin-bottom: 4px; }
+  .music-app .album-callout h1 { margin: 6px 0 4px; }
+  .music-app .album-callout .selection-artist { margin-bottom: 4px; }
+}
+  .android-rotate { display: flex; position: absolute; inset: 0; z-index: 100;
+    background: var(--page-bg); align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px; padding: 32px; text-align: center; }
+  .android-rotate strong { font-size: 24px; font-weight: 500; }
+  .android-rotate p { color: var(--muted); font-size: 13px; }
+
+.music-app .detail-album-navigation button { min-height: 48px; }
+.music-app .text-button { min-height: 48px; display: inline-flex; align-items: center; }
+
+.music-app #music-loading button { min-height: 48px; padding: 10px 18px; border: 1px solid var(--line); }
+
+/* Both orientations keep the same WebView, scene and audio session. */
+.music-app .android-rotate { display: none; }
+.music-app[data-now-playing="true"] .album-callout,
+.music-app[data-now-playing="true"] #album-detail-content { visibility: hidden; pointer-events: none; }
+.music-app #transport-track { display: flex; max-width: 125px; }
+.music-app .music-topnav .minimal-transport .transport-track { margin-right: 0; flex-shrink: 1; }
+.music-app .music-topnav .minimal-transport .transport-track > span { max-width: 100%; }
+.music-app .minimal-transport { min-width: 0; flex-shrink: 1; }
+.music-app .music-topnav { gap: 4px; }
+.music-app .music-brand span { letter-spacing: 0.7px; }
+.music-app .music-empty { max-width: calc(100% - 32px); padding: 16px; }
+@media (max-width: 740px) and (orientation: landscape) {
+  .music-app .music-brand strong { font-size: 15px; }
+  .music-app .theme-switch { display: none; }
+  .music-app #transport-track { max-width: 90px; }
+}
+  .music-app[data-layout="portrait"] .music-header { left: 16px; right: 16px; top: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .music-app[data-layout="portrait"] .music-identity { width: 100%; }
+  .music-app[data-layout="portrait"] .music-brand strong { font-size: 21px; }
+  .music-app[data-layout="portrait"] .music-brand span { display: none; }
+  .music-app[data-layout="portrait"] .music-topnav { width: 100%; grid-template-columns: repeat(4, 48px) minmax(48px, 1fr); justify-content: space-between; gap: 4px; }
+  .music-app[data-layout="portrait"] .theme-switch { display: none; }
+  .music-app[data-layout="portrait"] #transport-track { max-width: 95px; }
+  .music-app[data-layout="portrait"] .library-status { top: 112px; left: 16px; }
+  .music-app[data-layout="portrait"] .music-view-toggle { top: 132px; left: 16px; }
+  .music-app[data-layout="portrait"] .album-callout { left: 16px; right: 16px; top: auto; bottom: 164px; height: auto; max-height: 28%; margin: 0; padding: 8px 0; overflow-y: auto; }
+  .music-app[data-layout="portrait"] .album-callout h1 { margin: 8px 0; font-size: clamp(24px, 7vw, 36px); }
+  .music-app[data-layout="portrait"] .selection-meta { display: flex; }
+  .music-app[data-layout="portrait"] .music-navigation { left: 12px; right: 12px; bottom: 36px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .music-app[data-layout="portrait"] .music-counter { display: none; }
+  .music-app[data-layout="portrait"] .genre-stepper > div { min-width: 78px; }
+  .music-app[data-layout="portrait"] .album-stepper { display: flex; width: 100%; min-width: 0; justify-content: center; gap: 0; }
+  .music-app[data-layout="portrait"] .genre-stepper { display: flex; width: 100%; min-width: 0; justify-content: space-between; }
+  .music-app[data-layout="portrait"] .music-back { top: 128px; left: 16px; }
+  .music-app[data-layout="portrait"] #album-detail-content { left: 16px; right: 16px; top: 51%; bottom: 30px; padding: 12px 0 0; border-top: 1px solid var(--line, #aaa6); }
+  .music-app[data-layout="portrait"] .card-caption { left: 16px; right: 16px; top: 45%; bottom: auto; }
+  .music-app[data-layout="portrait"] .overview-heading { top: 134px; left: 16px; }
+  .music-app[data-layout="portrait"] .music-panel-scrim { padding: 12px; }
+  .music-app[data-layout="portrait"] .music-panel { padding: 18px 16px; }
+  .music-app[data-layout="portrait"] .music-bottomline { left: 12px; right: 12px; font-size: 7px; }
+  .music-app[data-layout="portrait"] #runtime-info { display: none; }
+  .music-app[data-layout="portrait"] #stop-playback { display: none; }
+  .music-app[data-layout="portrait"] #transport-track { max-width: min(90px, calc(100vw - 288px)); }
+.music-app[data-layout="portrait"] .music-topnav { --song-cap: min(90px, calc(100vw - 288px)); flex-shrink: 1; }
+.music-app[data-layout="portrait"] .music-topnav .minimal-transport { position: static; flex-wrap: nowrap; padding: 0; margin: 0; border: 0; gap: 0; }
+.music-app[data-layout="portrait"] .minimal-transport .transport-track.visible { width: min(var(--song-width, 90px), var(--song-cap)); }
+.music-app[data-layout="portrait"] .theme-switch { display: none; }
+
+/* The transparent WebView composites controls above the native Vulkan SurfaceView. */
+html[data-renderer="vulkan"],
+html[data-renderer="vulkan"] body,
+html[data-renderer="vulkan"] #viewport,
+html[data-renderer="vulkan"] #stage.music-app { background: transparent; }
+html[data-renderer="vulkan"] .three-scene { touch-action: none; }
+/* Focus and rotation transforms must never scroll the fixed composition surface. */
+html[data-renderer="vulkan"] #viewport,
+html[data-renderer="vulkan"] #stage { overflow: clip; }
+
+/* Specular edges are painted locally; no full-screen backdrop blur over the Vulkan surface. */
+.music-app .minimal-transport {
+  --glass-edge: #ffffffa8;
+  background: linear-gradient(145deg, #ffffff45, #ffffff08 38%, #ffffff18 75%, #ffffff38),
+    color-mix(in srgb, var(--page-bg) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 50%, var(--glass-edge));
+  box-shadow: inset 0 1px 0 #ffffffc4, inset 1px 0 0 #ffffff45,
+    inset 0 -1px 0 #ffffff35, 0 10px 28px #00000016;
+}
+
+.music-app .minimal-transport { border-radius: 8px; }
+.music-app[data-theme="night"] .minimal-transport {
+  --glass-edge: #ffffff50;
+  background: linear-gradient(145deg, #ffffff15, #ffffff03 44%, #ffffff08),
+    color-mix(in srgb, var(--page-bg) 94%, transparent);
+  box-shadow: inset 0 1px 0 #ffffff60, inset 1px 0 0 #ffffff18, inset 0 -1px 0 #ffffff15, 0 12px 30px #0005;
+}
+/* Let the exact native paper color meet the system bars at both edges. */
+.music-app .music-vignette {
+  mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+}

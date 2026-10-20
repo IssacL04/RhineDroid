@@ -1,0 +1,167 @@
+/* Interpolate the shared palette once, so gradients, rules and text stay in sync. */
+@property --ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #232722;
+}
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #74786f;
+}
+@property --line {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(42, 49, 42, 0.18);
+}
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #b56834;
+}
+@property --surface {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #efede7;
+}
+@property --panel {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(245, 244, 239, 0.97);
+}
+@property --page-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e8e5e1;
+}
+@property --veil {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(236, 233, 225, 0.72);
+}
+@property --music-status-ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #74786f;
+}
+@property --music-night-mix {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --music-side-veil-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --music-night-veil-start {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 24%;
+}
+@property --music-night-veil-mid {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 48%;
+}
+@property --music-night-veil-end {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 70%;
+}
+
+.music-app {
+  --music-status-ink: #74786f;
+  --music-night-mix: 0;
+  --music-side-veil-opacity: 1;
+  --music-night-veil-start: 24%;
+  --music-night-veil-mid: 48%;
+  --music-night-veil-end: 70%;
+}
+/* The side reading veil fades away when album text moves below the scene. */
+.music-app[data-layout="portrait"] {
+  --music-side-veil-opacity: 0;
+}
+.music-app[data-theme="night"] {
+  --music-status-ink: #e9eef2;
+  --music-night-mix: 1;
+}
+.music-app[data-theme="dusk"] {
+  --music-status-ink: #5f7280;
+}
+
+/* Enabled after the saved theme has painted; rapid reversals resume in place. */
+.music-app.theme-motion-ready {
+  transition-property:
+    --ink,
+    --muted,
+    --line,
+    --accent,
+    --surface,
+    --panel,
+    --page-bg,
+    --veil,
+    --music-status-ink,
+    --music-night-mix,
+    --music-side-veil-opacity,
+    --music-night-veil-start,
+    --music-night-veil-mid,
+    --music-night-veil-end;
+  transition-duration: calc(650ms * var(--music-motion-scale, 1));
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Keep both gradient shapes mounted instead of replacing their backgrounds. */
+.music-app .music-vignette,
+.music-app[data-theme="night"] .music-vignette {
+  background: none;
+}
+.music-app .music-vignette::before,
+.music-app .music-vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.music-app .music-vignette::before {
+  background: linear-gradient(
+    180deg,
+    var(--veil),
+    transparent 23%,
+    transparent 75%,
+    var(--veil)
+  );
+  opacity: calc(1 - var(--music-night-mix));
+}
+/* The landscape archive leaves more of the array clear beside its title. */
+.music-app[data-mode="archive"]:not([data-layout="portrait"]) {
+  --music-night-veil-start: 32%;
+  --music-night-veil-mid: 58%;
+  --music-night-veil-end: 78%;
+}
+.music-app .music-vignette::after {
+  background:
+    linear-gradient(
+      90deg,
+      transparent var(--music-night-veil-start, 24%),
+      rgba(5, 13, 25, calc(0.28 * var(--music-side-veil-opacity))) var(--music-night-veil-mid, 48%),
+      rgba(5, 13, 25, calc(0.78 * var(--music-side-veil-opacity))) var(--music-night-veil-end, 70%),
+      rgba(5, 13, 25, calc(0.84 * var(--music-side-veil-opacity)))
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 13, 25, 0.4),
+      transparent 24%,
+      transparent 73%,
+      rgba(5, 13, 25, 0.72)
+    );
+  opacity: var(--music-night-mix);
+}
+.music-app .library-status,
+.music-app[data-theme="night"] .library-status {
+  color: var(--music-status-ink);
+}
+
+.music-app.reduce-motion {
+  transition: none;
+}
