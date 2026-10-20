@@ -19,6 +19,10 @@
 
 RhineDroid 是 [Rhine-Music-Demo](https://github.com/RonaldDeng/Rhine-Music-Demo) 的 Android 移植分支，在手机上以三维专辑架浏览和播放本地音乐。界面设计源自 [RhineLabUI](https://github.com/LBEILC/RhineLabUI)，本分支独立维护 Android 适配。
 
+移植基于上游 **v0.4.1**，对应提交 [`dd2370f`](https://github.com/RonaldDeng/Rhine-Music-Demo/commit/dd2370fe686979081994a16859143e2adab89839)。相较于面向 macOS 的主线，本项目采用 Kotlin 应用容器、Filament / Vulkan 原生专辑架渲染与 AndroidX Media3 播放，并适配 Android 曲库访问、后台播放和横竖屏操作。
+
+本项目由 [IssacL04](https://github.com/IssacL04) 独立维护，属于非官方衍生版本。安装包见 [v0.4.8-Alpha](https://github.com/IssacL04/RhineDroid/releases/tag/v0.4.8-Alpha)，问题与建议请提交到 [RhineDroid Issues](https://github.com/IssacL04/RhineDroid/issues)，由本项目维护者处理。
+
 ## 已实现功能
 
 | 功能 | 说明 |
@@ -35,6 +39,8 @@ RhineDroid 是 [Rhine-Music-Demo](https://github.com/RonaldDeng/Rhine-Music-Demo
 ## 使用
 
 需要 Android 8.0 及以上，设备须支持 Vulkan 1.1。项目仍在测试阶段，音频格式的实际支持范围取决于设备解码能力。
+
+已完成本地 APK 构建、单元测试、Android Lint 与多尺寸界面回归检查，并依据真机反馈修复交互问题。Alpha 版本尚未完成广泛设备兼容性验证；在线专辑资料服务也可能受来源限流影响。当前公开安装包使用调试签名。
 
 应用 ID 为 `com.enc3l.rhinedroid`，RC 版为 `com.enc3l.rhinedroid.rc`。与旧包名版本分别安装，旧版的设置和曲库索引不会自动迁移；首次使用需重新授权并扫描音乐。
 

@@ -19,6 +19,10 @@
 
 RhineDroid is an Android port of [Rhine-Music-Demo](https://github.com/RonaldDeng/Rhine-Music-Demo) for browsing and playing local music on a 3D album shelf. Its interface design comes from [RhineLabUI](https://github.com/LBEILC/RhineLabUI). This branch independently maintains the Android adaptation.
 
+The port is based on upstream **v0.4.1**, commit [`dd2370f`](https://github.com/RonaldDeng/Rhine-Music-Demo/commit/dd2370fe686979081994a16859143e2adab89839). Compared with the macOS mainline, it uses a Kotlin application host, native Filament / Vulkan shelf rendering, and AndroidX Media3 playback, with Android library access, background playback, and landscape and portrait layouts.
+
+[IssacL04](https://github.com/IssacL04) independently maintains this unofficial derivative. Download the APK from [v0.4.8-Alpha](https://github.com/IssacL04/RhineDroid/releases/tag/v0.4.8-Alpha) and report problems or suggestions through [RhineDroid Issues](https://github.com/IssacL04/RhineDroid/issues). Support is provided by this project's maintainer.
+
 ## Implemented features
 
 | Feature | Details |
@@ -35,6 +39,8 @@ RhineDroid is an Android port of [Rhine-Music-Demo](https://github.com/RonaldDen
 ## Usage
 
 Requires Android 8.0 or later and Vulkan 1.1 support. The project is still in testing; actual audio format support depends on device decoding capabilities.
+
+Local APK builds, unit tests, Android Lint, and interface regression checks at multiple viewport sizes have passed, and interaction fixes have incorporated device feedback. Broad device compatibility has not yet been verified for this Alpha; online album information providers may also impose rate limits. The current public APK uses a debug signing certificate.
 
 The application ID is `com.enc3l.rhinedroid`, or `com.enc3l.rhinedroid.rc` for the RC build. It installs separately from builds using the previous package ID. Settings and library indexes do not migrate automatically; grant access and scan your music again on first use.
 
